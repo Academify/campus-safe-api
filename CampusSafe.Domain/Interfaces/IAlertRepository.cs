@@ -5,9 +5,10 @@ namespace CampusSafe.Domain.Interfaces;
 public interface IAlertRepository
 {
     public Task<Alert> GetAlertById(Guid id);
-    public Task ThrowNewAlert(Alert alert);
-    public Task UpdateAlert(Alert alert);
+    public Task<bool> ThrowNewAlert(Alert alert);
+    public Task<bool> UpdateAlert(Alert alert);
     public Task<IEnumerable<Alert>> GetAlerts();
+    public Task<bool> DeleteAlert(Guid id);
     public Task<IEnumerable<Alert>> GetAlertsByDate(DateTime date);
     public Task<IEnumerable<Alert>> GetAlertsByLocation(string latitude, string longitude);
     public Task<IEnumerable<Alert>> GetAlertsByDateAndLocation(DateTime date, string latitude, string longitude);

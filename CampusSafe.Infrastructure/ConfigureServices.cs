@@ -12,7 +12,9 @@ public static class ConfigureServices
     public static IServiceCollection AddRelationalDatabaseServices(this IServiceCollection services)
     {
         services.AddScoped<RelationalDatabaseConnection>();
-        services.AddScoped<IUserRepository, SqlRepository>();
+        services.AddScoped<BaseSqlRepository>();
+        services.AddScoped<IUserRepository, UsersSqlSqlRepository>();
+        services.AddScoped<IAlertRepository, AlertsSqlRepository>();
         services.AddScoped<IDatabaseAdapter<MySqlConnection>, RelationalDatabaseConnection>();
         return services;
     }
