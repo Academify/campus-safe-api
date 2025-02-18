@@ -1,10 +1,11 @@
 ﻿using CampusSafe.Domain.Base.Adapters;
+using CampusSafe.Domain.Interfaces.Repository;
 using Dapper;
 using MySqlConnector;
 
 namespace CampusSafe.Infrastructure.Repository;
 
-public class BaseSqlRepository
+public class BaseSqlRepository : IBaseSqlRepository
 {
     private readonly IDatabaseAdapter<MySqlConnection> _databaseAdapter;
     
@@ -12,8 +13,6 @@ public class BaseSqlRepository
     {
         _databaseAdapter = databaseAdapter;
     }
-
-    protected BaseSqlRepository() { }
 
     public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object? parameters = null)
     {

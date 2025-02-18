@@ -1,6 +1,6 @@
 ﻿using CampusSafe.Domain.Entities;
 
-namespace CampusSafe.Domain.Interfaces;
+namespace CampusSafe.Domain.Interfaces.Repository;
 
 public interface IUserRepository
 {

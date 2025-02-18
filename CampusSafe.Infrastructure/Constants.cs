@@ -14,4 +14,9 @@ public static class Constants
         public static readonly string UPDATE_ALERT = "UPDATE Alerts SET Message = @message, StartedDateTime = @startedDateTime, Latitude = @latitude, Longitude = @longitude, Status = @status WHERE Id = @id";
         public static readonly string DELETE_ALERT = "DELETE FROM Alerts WHERE Id = @id";
     }
+    
+    public static class AuthSqlQueries
+    {
+        public static readonly string GET_CLIENT_CREDENTIALS = "SELECT CASE WHEN EXISTS(SELECT 1 FROM ClientCredentials WHERE ClientId = @clientId AND ClientSecret = @clientSecret) THEN TRUE ELSE FALSE END";
+    }
 }

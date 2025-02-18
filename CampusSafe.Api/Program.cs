@@ -10,6 +10,8 @@ public class Program
         builder.Logging.AddLogginServices();
         builder.Services.AddCampusSafeApiBaseServices();
         builder.Services.AddRelationalDatabaseServices();
+        builder.Services.AddAuthenticationServices(builder.Configuration);
+        builder.Services.AddSwaggerServices();
         
         var app = builder.Build();
         

@@ -1,6 +1,7 @@
 ﻿using CampusSafe.Api.Models;
 using CampusSafe.Domain.Base.Exceptions;
-using CampusSafe.Domain.Interfaces;
+using CampusSafe.Domain.Interfaces.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using AlertMapper = CampusSafe.Api.Mapping.AlertMapper;
 
@@ -8,6 +9,7 @@ namespace CampusSafe.Api.Controllers;
 
 [Route("api")]
 [ApiController]
+[Authorize]
 public class AlertController(IAlertRepository alertRepository, ILogger<AlertController> logger) : ControllerBase
 {
     private readonly ILogger<AlertController> _logger = logger;
