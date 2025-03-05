@@ -1,29 +1,19 @@
-﻿using CampusSafe.Domain.Base.Adapters;
-using CampusSafe.Domain.Base.Exceptions;
+﻿using CampusSafe.Domain.Base.Exceptions;
 using CampusSafe.Domain.Entities;
-using CampusSafe.Domain.Interfaces;
-using CampusSafe.Infrastructure.Configuration;
+using CampusSafe.Domain.Interfaces.Repository;
 using CampusSafe.Infrastructure.Mapping;
 using CampusSafe.Infrastructure.Model;
 using Dapper;
-using MySqlConnector;
 
 namespace CampusSafe.Infrastructure.Repository;
 
-public class AlertsSqlRepository : IAlertRepository
+public class AlertsSqlRepository(BaseSqlRepository baseSqlRepository) : IAlertRepository
 {
-    private readonly IDatabaseAdapter<MySqlConnection> _databaseAdapter;
-    
-    public AlertsSqlRepository(IDatabaseAdapter<MySqlConnection> databaseAdapter)
-    {
-        _databaseAdapter = databaseAdapter;
-    }
-    
     public async Task<Alert> GetAlertById(Guid id)
     {
         DynamicParameters parameters = new DynamicParameters();
         parameters.Add("@id", id);
-        var alert = await QueryAsync<AlertDto>(Constants.AlertsSqlQueries.GET_ALERT_BY_ID, parameters);
+        var alert = await baseSqlRepository.QueryAsync<AlertDto>(Constants.AlertsSqlQueries.GET_ALERT_BY_ID, parameters);
         return AlertMapper.MapToAlert(alert.FirstOrDefault()) ?? throw new NoResultsException("No alert found with the given id.");;
     }
 
@@ -37,7 +27,7 @@ public class AlertsSqlRepository : IAlertRepository
         parameters.Add("@longitude", alert.Longitude);
         parameters.Add("@status", alert.Status.ToString());
         
-        var result = await QueryAsync<AlertDto>(Constants.AlertsSqlQueries.INSERT_ALERT, parameters);
+        var result = await baseSqlRepository.QueryAsync<AlertDto>(Constants.AlertsSqlQueries.INSERT_ALERT, parameters);
         
         return result.Any();
     }
@@ -52,13 +42,13 @@ public class AlertsSqlRepository : IAlertRepository
         parameters.Add("@longitude", alert.Longitude);
         parameters.Add("@status", alert.Status.ToString());
         
-        var result = await QueryAsync<AlertDto>(Constants.AlertsSqlQueries.UPDATE_ALERT, parameters);
+        var result = await baseSqlRepository.QueryAsync<AlertDto>(Constants.AlertsSqlQueries.UPDATE_ALERT, parameters);
         return result.Any();
     }
 
     public async Task<IEnumerable<Alert>> GetAlerts()
     {
-        var alerts = await QueryAsync<AlertDto>(Constants.AlertsSqlQueries.GET_ALERTS);
+        var alerts = await baseSqlRepository.QueryAsync<AlertDto>(Constants.AlertsSqlQueries.GET_ALERTS);
         return alerts.Select(AlertMapper.MapToAlert);
     }
 
@@ -66,7 +56,7 @@ public class AlertsSqlRepository : IAlertRepository
     {
         DynamicParameters parameters = new DynamicParameters();
         parameters.Add("@id", id);
-        return QueryAsync<AlertDto>(Constants.AlertsSqlQueries.DELETE_ALERT, parameters).ContinueWith(task => task.Result.Any());
+        return baseSqlRepository.QueryAsync<AlertDto>(Constants.AlertsSqlQueries.DELETE_ALERT, parameters).ContinueWith(task => task.Result.Any());
     }
 
     public Task<IEnumerable<Alert>> GetAlertsByDate(DateTime date)
@@ -103,11 +93,5 @@ public class AlertsSqlRepository : IAlertRepository
         double range)
     {
         throw new NotImplementedException();
-    }
-    
-    public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object? parameters = null)
-    {
-        using var connectionClient = _databaseAdapter.GetConnection();
-        return await connectionClient.QueryAsync<T>(new CommandDefinition(sql, parameters));
     }
 }

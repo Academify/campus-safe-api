@@ -10,5 +10,5 @@ public class AlertDto
     public string Message { get; set; } = string.Empty;
     public string? Latitude { get; set; } = string.Empty;
     public string Longitude { get; set; } = string.Empty;
-    public AlertStatusEnum Status { get; set; }
+    public string Status { get; set; } = AlertStatusEnum.Active.ToString();
 }

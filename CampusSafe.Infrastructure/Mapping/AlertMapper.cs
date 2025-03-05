@@ -8,7 +8,7 @@ public class AlertMapper
 {
     public static Alert MapToAlert(AlertDto? alertDto)
     {
-        return (alertDto == null) ? null : new Alert(alertDto.Message, alertDto.StartedDateTime, alertDto.Latitude, alertDto.Longitude, alertDto.Status)
+        return (alertDto == null) ? null : new Alert(alertDto.Message, alertDto.StartedDateTime, alertDto.Latitude, alertDto.Longitude, AlertStatusEnum.Active)
         {
             StartedDateTime = default,
             Latitude = null,
