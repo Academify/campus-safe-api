@@ -19,6 +19,6 @@ public class AuthController(ITokenService tokenService, IAuthRepository authRepo
     {
         Console.WriteLine("Authenticating user");
         var authenticated = _authRepository.AuthenticateUser(request).Result;
-        return authenticated ? Ok(_tokenService.GenerateToken()) : Unauthorized("Invalid credentials");
+        return authenticated ? Ok(new { access_token = _tokenService.GenerateToken() }) : Unauthorized("Invalid credentials");
     }
 }

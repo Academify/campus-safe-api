@@ -30,41 +30,30 @@ public static class ConfigureServices
     
     public static IServiceCollection AddAuthenticationServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services.AddSingleton<TokenService>();
         var jwtSettings = configuration.GetSection("JwtSettings");
         var key = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]);
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        
+        services.AddAuthentication()
             .AddJwtBearer(options =>
             {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = jwtSettings["Issuer"],
-                    ValidAudience = jwtSettings["Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(key)
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
                 };
             });
-        services.AddSingleton<TokenService>();
+
         return services;
     }
     
-    public static IServiceCollection AddSwaggerServices(this IServiceCollection services)
+    public static IServiceCollection AddSwaggerGenConfig(this IServiceCollection services)
     {
-        //Tem erro aqui
         services.AddSwaggerGen(c =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "Minha API",
-                Version = "v1"
-            });
-
-            // Definir esquema de segurança
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            c.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
             {
                 Description = "Insira o token JWT no formato: Bearer {seu_token_aqui}",
                 Name = "Authorization",
@@ -81,10 +70,10 @@ public static class ConfigureServices
                         Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
+                            Id = JwtBearerDefaults.AuthenticationScheme
                         }
                     },
-                    new string[] {}
+                    new string[] { }
                 }
             });
         });

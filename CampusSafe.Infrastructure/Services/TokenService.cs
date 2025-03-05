@@ -13,23 +13,21 @@ public class TokenService(IConfiguration configuration) : ITokenService
 
     public string GenerateToken()
     {
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var key = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"] ?? throw new ArgumentNullException("SecretKey"));
-        
         var tokenHandler = new JwtSecurityTokenHandler();
+        var jwtSettings = _configuration.GetSection("JwtSettings");
+        var key = Encoding.UTF8.GetBytes(jwtSettings["SecretKey"] ?? throw new ArgumentNullException("SecretKey"));;
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Issuer = jwtSettings["Issuer"],
-            Audience = jwtSettings["Audience"],
-            Expires = DateTime.UtcNow.AddHours(1),
+            Subject = new ClaimsIdentity(new[]
+            {
+                new Claim(ClaimTypes.Role, "client")
+            }),
+            Expires = DateTime.UtcNow.AddMinutes(60),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
                 SecurityAlgorithms.HmacSha256Signature
-            ),
-            Claims = new Dictionary<string, object>
-            {
-                { ClaimTypes.Role, "client" }
-            }
+            )
         };
 
         var token = tokenHandler.CreateToken(tokenDescriptor);

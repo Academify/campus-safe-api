@@ -35,7 +35,6 @@ public static class ConfigureServices
         services.AddHttpLogging(o => { });
         services.AddControllers();
         services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
 
         return services;
     }
