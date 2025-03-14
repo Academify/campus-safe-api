@@ -43,7 +43,7 @@ CampusSafe é uma aplicação criada para auxiliar a comunidade acadêmica, sobr
 5. Acesse `https://localhost:7121` para testar a API.
 
 ## Publicação
-⏰ Em breve
+⏰ Em breve 
 
 ## Autores
 
